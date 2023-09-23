@@ -1,4 +1,4 @@
-package com.sana.habituniverse.presentation.list
+package com.sana.habituniverse.presentation.home
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DropdownMenu
@@ -38,14 +36,12 @@ import androidx.compose.ui.unit.sp
 data class HabitItem(val title: String, val progressDays: Int)
 
 @Composable
-fun HabitItemRow(habit: HabitItem) {
+fun HabitItemRow(habit: HabitItem, modifier: Modifier) {
     var expanded by remember { mutableStateOf(false) }
     val contextForToast = LocalContext.current.applicationContext
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
@@ -55,10 +51,8 @@ fun HabitItemRow(habit: HabitItem) {
 
         Spacer(modifier = Modifier.weight(1f))
 
-
         Box(
             modifier = Modifier
-                .fillMaxSize()
                 .wrapContentSize(align = Alignment.Center),
             contentAlignment = Alignment.Center
         ) {
@@ -125,12 +119,4 @@ fun HabitItemRow(habit: HabitItem) {
             }
         }
     }
-}
-
-
-
-@Preview
-@Composable
-fun HabitItemRowPreview() {
-    HabitItemRow(habit = HabitItem("Exercise", 5))
 }

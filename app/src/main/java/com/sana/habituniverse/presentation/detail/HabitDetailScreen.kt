@@ -1,6 +1,7 @@
 package com.sana.habituniverse.presentation.detail
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -8,18 +9,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.sana.habituniverse.presentation.HabitUniverseScreen
+import com.sana.habituniverse.presentation.ui.CommonScreen
+
+@Composable
+fun HabitDetailScreen(navController: NavHostController, title: String) {
+    CommonScreen(
+        leftIcon = Icons.Default.ArrowBack,
+        title = title,
+        onLeftClick = { navController.popBackStack() }
+    ) {
+        HabitDetailContent(
+            onStarClick = {
+                navController.navigate(HabitUniverseScreen.Check.route)
+            }
+        )
+    }
+}
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun DetailScreen() {
+fun HabitDetailContent(onStarClick: () -> Unit) {
     val rows = 7
     val columns = 3
     val sections = listOf("A", "B", "C", "D", "E", "F", "G")
@@ -43,7 +62,11 @@ fun DetailScreen() {
                         Icon(
                             imageVector = Icons.Filled.Star,
                             contentDescription = "Checkmark",
-                            modifier = Modifier.size(50.dp),
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable {
+                                    onStarClick()
+                                },
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -51,10 +74,4 @@ fun DetailScreen() {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun DetailPreview() {
-    DetailScreen()
 }
