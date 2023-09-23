@@ -1,4 +1,4 @@
-package com.sana.habituniverse.ui.theme
+package com.sana.habituniverse.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
