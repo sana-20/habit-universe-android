@@ -17,6 +17,8 @@ interface HabitRepository {
     suspend fun deleteHabit(id: String)
     suspend fun upsertHabit(habit: Habit)
     suspend fun updateHabitCompleted(id: String, completed: Boolean)
+    suspend fun createHabit(name: String, alarmHour: Int, alarmMinute: Int)
+    suspend fun updateHabit(id: String, name: String, alarmHour: Int, alarmMinute: Int)
 }
 
 class HabitRepositoryImpl @Inject constructor() : HabitRepository {
@@ -54,17 +56,37 @@ class HabitRepositoryImpl @Inject constructor() : HabitRepository {
         realm.executeTransaction {
             val habit = realm.where(Habit::class.java).equalTo("id", id).findFirst()
             habit?.isCompleted = completed
-            it.copyToRealmOrUpdate(habit)
+            if (habit != null) {
+                it.copyToRealmOrUpdate(habit)
+            }
         }
         realm.close()
     }
 
-    private fun generateTestData() : List<Habit> {
-        val habits = mutableListOf<Habit>()
-        repeat(10) {
-            val habit = Habit(id = UUID.randomUUID().toString(), name = "Test_${System.currentTimeMillis()}", progressDays = Random().nextInt(100))
-            habits.add(habit)
+    override suspend fun createHabit(name: String, alarmHour: Int, alarmMinute: Int) = withContext(Dispatchers.IO) {
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            it.createObject(Habit::class.java, UUID.randomUUID().toString()).apply {
+                this.name = name
+                this.alarmHour = alarmHour
+                this.alarmMinute = alarmMinute
+            }
         }
-        return habits
+        realm.close()
     }
+
+    override suspend fun updateHabit(id: String, name: String, alarmHour: Int, alarmMinute: Int) = withContext(Dispatchers.IO) {
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            val habit = realm.where(Habit::class.java).equalTo("id", id).findFirst()
+            habit?.name = name
+            habit?.alarmHour = alarmHour
+            habit?.alarmMinute = alarmMinute
+            if (habit != null) {
+                it.insertOrUpdate(habit)
+            }
+        }
+        realm.close()
+    }
+
 }

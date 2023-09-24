@@ -12,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,10 +22,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.sana.habituniverse.common.utils.log
 import com.sana.habituniverse.presentation.check.HabitCheckScreen
 import com.sana.habituniverse.presentation.detail.HabitDetailScreen
 import com.sana.habituniverse.presentation.home.HabitHomeScreen
 import com.sana.habituniverse.presentation.post.HabitPostScreen
+import com.sana.habituniverse.presentation.post.HabitPostViewModel
+import org.orbitmvi.orbit.compose.collectAsState
 
 enum class HabitUniverseScreen(val route: String) {
     Home("home"),
@@ -71,9 +75,12 @@ fun HabitUniverseApp(
                     nullable = true
                 })
             ) {
+                val viewModel = hiltViewModel<HabitPostViewModel>()
+                viewModel.load(it.arguments?.getString("id") ?: "")
+
                 HabitPostScreen(
                     navController = navController,
-                    id = it.arguments?.getString("id") ?: ""
+                    viewModel = viewModel
                 )
             }
             composable(

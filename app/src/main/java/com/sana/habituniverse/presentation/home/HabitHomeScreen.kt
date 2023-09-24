@@ -48,10 +48,10 @@ fun HabitHomeScreen(navController: NavHostController, viewModel: HabitHomeViewMo
     viewModel.collectSideEffect(sideEffect = {
         when (it) {
             is HabitHomeSideEffect.GoToDetail -> {
-                navController.navigate(HabitUniverseScreen.Detail.route + "/$it")
+                navController.navigate(HabitUniverseScreen.Detail.route + "/${it.id}")
             }
             is HabitHomeSideEffect.GoToPost -> {
-                navController.navigate(HabitUniverseScreen.Post.route + "?id=$it")
+                navController.navigate(HabitUniverseScreen.Post.route + "?id=${it.id}")
             }
         }
     })
