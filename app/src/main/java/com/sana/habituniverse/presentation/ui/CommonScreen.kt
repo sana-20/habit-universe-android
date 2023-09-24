@@ -1,6 +1,5 @@
 package com.sana.habituniverse.presentation.ui
 
-import android.icu.text.CaseMap
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +17,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CommonScreen(
-    title: String? = null,
+    id: String? = null,
     rightIcon: ImageVector? = null,
     onLeftClick: () -> Unit = {},
     onRightClick: () -> Unit = {},
@@ -40,8 +39,8 @@ fun CommonScreen(
                     Icon(imageVector = leftIcon, contentDescription = "Back")
                 }
             }
-            if (title != null) {
-                Text(text = title, modifier = Modifier.weight(1f))
+            if (id != null) {
+                Text(text = id, modifier = Modifier.weight(1f))
             } else {
                 Spacer(modifier = Modifier.weight(1f))
             }

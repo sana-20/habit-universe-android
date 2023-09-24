@@ -17,8 +17,6 @@ class HabitUniverseApplication : Application() {
         Realm.init(this)
         val config = RealmConfiguration.Builder()
             .name("HabitUniverse.realm")
-                // TODO: 나중에 빼야 함
-            .allowWritesOnUiThread(true)
             .schemaVersion(1)
             .deleteRealmIfMigrationNeeded()
             .build()

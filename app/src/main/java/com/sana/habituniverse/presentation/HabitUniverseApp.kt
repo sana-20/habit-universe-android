@@ -1,9 +1,12 @@
 package com.sana.habituniverse.presentation
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -11,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -40,11 +44,11 @@ fun HabitUniverseApp(
     Scaffold(
         floatingActionButton = {
             if (currentRoute.value?.destination?.route == HabitUniverseScreen.Home.route) {
-                IconButton(
+                FloatingActionButton(
                     onClick = { navController.navigate(HabitUniverseScreen.Post.route) },
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(56.dp)
                 ) {
-                    Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "Add")
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
                 }
             }
         }
@@ -55,16 +59,31 @@ fun HabitUniverseApp(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(HabitUniverseScreen.Home.route) {
-                HabitHomeScreen(navController = navController)
-            }
-            composable(HabitUniverseScreen.Post.route) {
-                HabitPostScreen(navController = navController)
+                HabitHomeScreen(
+                    navController = navController,
+                    viewModel = hiltViewModel()
+                )
             }
             composable(
-                HabitUniverseScreen.Detail.route + "/{title}",
-                arguments = listOf(navArgument("title") { type = NavType.StringType })
+                HabitUniverseScreen.Post.route + "?id={id}",
+                arguments = listOf(navArgument("id") {
+                    type = NavType.StringType
+                    nullable = true
+                })
             ) {
-                HabitDetailScreen(navController = navController, title = it.arguments?.getString("title") ?: "")
+                HabitPostScreen(
+                    navController = navController,
+                    id = it.arguments?.getString("id") ?: ""
+                )
+            }
+            composable(
+                HabitUniverseScreen.Detail.route + "/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) {
+                HabitDetailScreen(
+                    navController = navController,
+                    id = it.arguments?.getString("id") ?: ""
+                )
             }
             composable(HabitUniverseScreen.Check.route) {
                 HabitCheckScreen(navController = navController)

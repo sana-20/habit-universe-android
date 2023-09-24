@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sana.habituniverse.presentation.HabitUniverseScreen
 import com.sana.habituniverse.presentation.ui.CommonScreen
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 enum class Filter {
     All, InProgress, Completed
@@ -39,15 +41,20 @@ enum class Sort {
 
 }
 
-val habitList = listOf(
-    HabitItem("Exercise", 5),
-    HabitItem("Read", 10),
-    HabitItem("Meditate", 3)
-)
-
 @Composable
-fun HabitHomeScreen(navController: NavHostController) {
+fun HabitHomeScreen(navController: NavHostController, viewModel: HabitHomeViewModel) {
     var showSheet by remember { mutableStateOf(false) }
+    val habitHomeState by viewModel.collectAsState()
+    viewModel.collectSideEffect(sideEffect = {
+        when (it) {
+            is HabitHomeSideEffect.GoToDetail -> {
+                navController.navigate(HabitUniverseScreen.Detail.route + "/$it")
+            }
+            is HabitHomeSideEffect.GoToPost -> {
+                navController.navigate(HabitUniverseScreen.Post.route + "?id=$it")
+            }
+        }
+    })
 
     CommonScreen(
         rightIcon = Icons.Default.List,
@@ -60,30 +67,56 @@ fun HabitHomeScreen(navController: NavHostController) {
                 showSheet = false
             }
         }
-
-        HabitHomeContent(
-            onItemClick = {
-                navController.navigate(HabitUniverseScreen.Detail.route + "/$it")
+        when (val state = habitHomeState) {
+            is HabitHomeState.Loaded -> {
+                HabitHomeContent(
+                    onItemClick = {
+                        navController.navigate(HabitUniverseScreen.Detail.route + "/$it")
+                    },
+                    habits = state.habits,
+                    onArchiveClick = {
+                        viewModel.onEvent(HabitHomeEvent.ArchiveHabit(it))
+                    },
+                    onEditClick = {
+                        viewModel.onEvent(HabitHomeEvent.EditHabit(it))
+                    },
+                    onDeleteClick = {
+                        viewModel.onEvent(HabitHomeEvent.DeleteHabit(it))
+                    }
+                )
             }
-        )
+
+            HabitHomeState.Loading -> {
+
+            }
+        }
     }
 }
 
 @Composable
-fun HabitHomeContent(onItemClick: (String) -> Unit) {
+fun HabitHomeContent(
+    habits: List<HabitHomeItem>,
+    onItemClick: (String) -> Unit,
+    onArchiveClick: (String) -> Unit,
+    onEditClick: (String) -> Unit,
+    onDeleteClick: (String) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn {
-            items(habitList) { habit ->
+            items(habits) { habit ->
                 HabitItemRow(
                     habit = habit,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .clickable { onItemClick(habit.title) }
+                        .clickable { onItemClick(habit.id) },
+                    onArchiveClick = onArchiveClick,
+                    onEditClick = onEditClick,
+                    onDeleteClick = onDeleteClick
                 )
             }
         }

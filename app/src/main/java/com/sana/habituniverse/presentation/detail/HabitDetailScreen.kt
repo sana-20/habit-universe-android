@@ -22,10 +22,10 @@ import com.sana.habituniverse.presentation.HabitUniverseScreen
 import com.sana.habituniverse.presentation.ui.CommonScreen
 
 @Composable
-fun HabitDetailScreen(navController: NavHostController, title: String) {
+fun HabitDetailScreen(navController: NavHostController, id: String) {
     CommonScreen(
         leftIcon = Icons.Default.ArrowBack,
-        title = title,
+        id = id,
         onLeftClick = { navController.popBackStack() }
     ) {
         HabitDetailContent(

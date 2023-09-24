@@ -14,7 +14,8 @@ import com.sana.habituniverse.presentation.ui.CommonInputField
 import com.sana.habituniverse.presentation.ui.CommonScreen
 
 @Composable
-fun HabitPostScreen(navController: NavHostController) {
+fun HabitPostScreen(navController: NavHostController, id: String?) {
+    log("HabitPostScreen: $id"  )
     CommonScreen(
         rightIcon = Icons.Default.Check,
         leftIcon = Icons.Default.ArrowBack,
